@@ -13,59 +13,61 @@ public:
         return instance;
     }
 
-private:
-    Cockoo
-};
+    void play_bell_sequence(int num) {
+        if (num <= 0)
+            return;
 
+        this->sound_prep.play();
+        wait_sound(&(this->sound_prep));
 
-void play_bell_sequence(int num) {
-    
-}
+        for (int cnt = 0; cnt < num - 1; cnt++) {
+            this->sound_single.play();
+            wait_sound(&(this->sound_single));
+        }
 
-int main() {
+        this->sound_last.play();
+        wait_sound(&(this->sound_last));
+    }
+    Cockoo() {
+        load_sounds();
+    }
 
-    // Preparing sounds
     sf::SoundBuffer buffer1;
     sf::SoundBuffer buffer2;
     sf::SoundBuffer buffer3;
 
-    bool success = true;
-    success = buffer1.loadFromFile(SND_PATH_PRE) ? success : false;
-    success = buffer2.loadFromFile(SND_PATH_SINGLE) ? success : false;
-    success = buffer3.loadFromFile(SND_PATH_LAST) ? success : false;
-    if (!success) {
-        std::cerr << "Failed to load audio file." << std::endl;
-        return 1;
-    }
-
     sf::Sound sound_prep;
     sf::Sound sound_single;
     sf::Sound sound_last;
-    
-    sound_prep.setBuffer(buffer1);
-    sound_single.setBuffer(buffer2);
-    sound_last.setBuffer(buffer3);
 
-    // Play the loaded audio
-    sound_prep.play();
-
-    // Wait for the audio to finish playing
-    while (sound_prep.getStatus() == sf::Sound::Playing) {
+    // Passes when the sound ends
+    void wait_sound(sf::Sound *snd) {
+        while (snd->getStatus() == sf::Sound::Playing) {}
     }
-    int counter = 0;
-    while (counter <= 5) {
-        sound_single.play();
-        while (sound_single.getStatus() == sf::Sound::Playing) {
+
+    // Preparing sounds
+    bool load_sounds() {
+
+        bool success = true;
+        success = this->buffer1.loadFromFile(SND_PATH_PRE) ? success : false;
+        success = this->buffer2.loadFromFile(SND_PATH_SINGLE) ? success : false;
+        success = this->buffer3.loadFromFile(SND_PATH_LAST) ? success : false;
+        if (!success) {
+            std::cerr << "Failed to load audio file." << std::endl;
+            return false;
         }
-        counter++;
+
+        this->sound_prep.setBuffer(this->buffer1);
+        this->sound_single.setBuffer(this->buffer2);
+        this->sound_last.setBuffer(this->buffer3);
     }
-    sound_last.play();
-    while(sound_last.getStatus() == sf::Sound::Playing) {}
-    
+}; 
+
+int main() {
+    Cockoo cockooApp = Cockoo::getInstance();
+
+    cockooApp.play_bell_sequence(3);
+
+ 
     return 0;
 }
-//void PlayCuckooBells() {
-//    const char* filePath = "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\single_bell.wav";
-//
-//    PlaySoundA(filePath, NULL, SND_FILENAME);
-//}
