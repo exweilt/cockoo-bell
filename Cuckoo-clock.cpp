@@ -1,5 +1,8 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <chrono>
+#include <ctime>
+#include <thread>
 
 #define SND_PATH_PRE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\pre_bell.wav"
 #define SND_PATH_SINGLE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\single_bell.wav"
@@ -28,6 +31,7 @@ public:
         this->sound_last.play();
         wait_sound(&(this->sound_last));
     }
+private:
     Cockoo() {
         load_sounds();
     }
@@ -66,8 +70,24 @@ public:
 int main() {
     Cockoo cockooApp = Cockoo::getInstance();
 
-    cockooApp.play_bell_sequence(3);
+    //cockooApp.play_bell_sequence(3);
 
+    std::cout << "Cockoo awaits its time" << std::endl;
+
+    // Cockoo cycle
+    while (true) {
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+        struct std::tm timeInfo;
+        localtime_s(&timeInfo, &currentTime);
+
+        std::cout << "Cycle, sec " << timeInfo.tm_sec << std::endl;
+        
+        std::this_thread::sleep_for(std::chrono::seconds(60 - timeInfo.tm_sec));
+
+        cockooApp.play_bell_sequence(((timeInfo.tm_hour - 1) % 12 + 1));
+        
+    }
  
     return 0;
 }
