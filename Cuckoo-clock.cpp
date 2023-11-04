@@ -11,6 +11,8 @@
 #define VOLUME 40
 #define PITCH 0.9
 
+#define BELL_TEST
+
 class Cockoo {
 public:
     static Cockoo& getInstance() {
@@ -80,8 +82,10 @@ private:
 int main() {
     Cockoo cockooApp = Cockoo::getInstance();
 
-    
-    //cockooApp.play_bell_sequence(3);
+#ifdef BELL_TEST
+    cockooApp.play_bell_sequence(3);
+#endif
+
 
     std::cout << "Cockoo awaits its time" << std::endl;
 
