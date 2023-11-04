@@ -11,7 +11,7 @@
 #define VOLUME 40
 #define PITCH 0.9
 
-#define BELL_TEST
+//#define BELL_TEST
 
 class Cockoo {
 public:
