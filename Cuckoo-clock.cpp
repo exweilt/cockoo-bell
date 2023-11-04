@@ -8,8 +8,8 @@
 #define SND_PATH_SINGLE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\single_bell.wav"
 #define SND_PATH_LAST "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\last_bell.wav"
 
-#define VOLUME 30
-
+#define VOLUME 40
+#define PITCH 0.9
 
 class Cockoo {
 public:
@@ -70,12 +70,17 @@ private:
         this->sound_prep.setVolume(VOLUME);
         this->sound_single.setVolume(VOLUME);
         this->sound_last.setVolume(VOLUME);
+            
+        this->sound_prep.setPitch(PITCH);
+        this->sound_single.setPitch(PITCH);
+        this->sound_last.setPitch(PITCH);
     }
 }; 
 
 int main() {
     Cockoo cockooApp = Cockoo::getInstance();
 
+    
     //cockooApp.play_bell_sequence(3);
 
     std::cout << "Cockoo awaits its time" << std::endl;
