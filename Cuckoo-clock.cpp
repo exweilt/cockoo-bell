@@ -8,6 +8,8 @@
 #define SND_PATH_SINGLE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\single_bell.wav"
 #define SND_PATH_LAST "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\last_bell.wav"
 
+#define VOLUME 30
+
 
 class Cockoo {
 public:
@@ -64,6 +66,10 @@ private:
         this->sound_prep.setBuffer(this->buffer1);
         this->sound_single.setBuffer(this->buffer2);
         this->sound_last.setBuffer(this->buffer3);
+        
+        this->sound_prep.setVolume(VOLUME);
+        this->sound_single.setVolume(VOLUME);
+        this->sound_last.setVolume(VOLUME);
     }
 }; 
 
