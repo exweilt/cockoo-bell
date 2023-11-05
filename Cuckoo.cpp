@@ -109,6 +109,7 @@ private:
 }; 
 
 int main() {
+    FreeConsole();
     Cockoo cockooApp = Cockoo::getInstance();
 
 #ifdef BELL_TEST
