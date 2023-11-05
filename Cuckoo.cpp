@@ -128,9 +128,10 @@ int main() {
 
         std::cout << "Cycle, sec " << timeInfo.tm_sec << std::endl;
         
-        std::this_thread::sleep_for(std::chrono::seconds(60 - timeInfo.tm_sec));
+        std::this_thread::sleep_for(std::chrono::seconds((3600 - timeInfo.tm_min*60) + 60 - timeInfo.tm_sec));
+        //std::this_thread::sleep_for(std::chrono::seconds(60 - timeInfo.tm_sec));
 
-        cockooApp.play_bell_sequence(((timeInfo.tm_hour - 1) % 12 + 1));
+        cockooApp.play_bell_sequence((timeInfo.tm_hour % 12 + 1));
         
     }
  
