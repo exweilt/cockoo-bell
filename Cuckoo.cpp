@@ -3,6 +3,9 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <Windows.h>
+#include <cassert>
+#include "resource.h"
 
 #define SND_PATH_PRE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\pre_bell.wav"
 #define SND_PATH_SINGLE "C:\\Users\\Nekto\\Desktop\\projects\\repos\\Cuckoo-clock\\single_bell.wav"
@@ -55,14 +58,40 @@ private:
 
     // Preparing sounds
     bool load_sounds() {
+        // Load resources into memory
+        HMODULE App = GetModuleHandleA(NULL);
+
+        HRSRC hResource1 = FindResource(App, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
+        HRSRC hResource2 = FindResource(App, MAKEINTRESOURCE(IDR_WAVE2), TEXT("WAVE"));
+        HRSRC hResource3 = FindResource(App, MAKEINTRESOURCE(IDR_WAVE3), TEXT("WAVE"));
+        assert(hResource1 && hResource2 && hResource3);
+
+        HGLOBAL hResourceData1 = LoadResource(App, hResource1);
+        HGLOBAL hResourceData2 = LoadResource(App, hResource2);
+        HGLOBAL hResourceData3 = LoadResource(App, hResource3);
+        assert(hResourceData1 && hResourceData2 && hResourceData3);
+
+        DWORD res1_size = SizeofResource(App, hResource1);
+        DWORD res2_size = SizeofResource(App, hResource2);
+        DWORD res3_size = SizeofResource(App, hResource3);
+
+        // Get pointers to Resourse data
+        const void* res1_ptr = LockResource(hResourceData1);
+        const void* res2_ptr = LockResource(hResourceData2);
+        const void* res3_ptr = LockResource(hResourceData3);
 
         bool success = true;
-        success = this->buffer1.loadFromFile(SND_PATH_PRE) ? success : false;
-        success = this->buffer2.loadFromFile(SND_PATH_SINGLE) ? success : false;
-        success = this->buffer3.loadFromFile(SND_PATH_LAST) ? success : false;
+        success = this->buffer1.loadFromMemory(res1_ptr, res1_size) ? success : false;
+        success = this->buffer2.loadFromMemory(res2_ptr, res2_size) ? success : false;
+        success = this->buffer3.loadFromMemory(res3_ptr, res3_size) ? success : false;
+
+        //success = this->buffer1.loadFromFile(SND_PATH_PRE) ? success : false;
+        //success = this->buffer2.loadFromFile(SND_PATH_SINGLE) ? success : false;
+        //success = this->buffer3.loadFromFile(SND_PATH_LAST) ? success : false;
+
         if (!success) {
             std::cerr << "Failed to load audio file." << std::endl;
-            return false;
+            abort();
         }
 
         this->sound_prep.setBuffer(this->buffer1);
