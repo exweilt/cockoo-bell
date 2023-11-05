@@ -108,6 +108,14 @@ private:
     }
 }; 
 
+std::tm get_time() {
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::time_t cur_time = std::chrono::system_clock::to_time_t(now);
+    std::tm time_info;
+    localtime_s(&time_info, &cur_time);
+    return time_info;
+}
+
 int main() {
     FreeConsole();
     Cockoo cockooApp = Cockoo::getInstance();
@@ -120,20 +128,31 @@ int main() {
     std::cout << "Cockoo awaits its time" << std::endl;
 
     // Cockoo cycle
+    int hour_last_check = get_time().tm_hour;
     while (true) {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
-        struct std::tm timeInfo;
-        localtime_s(&timeInfo, &currentTime);
-
-        std::cout << "Cycle, sec " << timeInfo.tm_sec << std::endl;
         
-        std::this_thread::sleep_for(std::chrono::seconds((3600 - timeInfo.tm_min*60) + 60 - timeInfo.tm_sec));
-        //std::this_thread::sleep_for(std::chrono::seconds(60 - timeInfo.tm_sec));
-
-        cockooApp.play_bell_sequence((timeInfo.tm_hour % 12 + 1));
-        
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        std::tm now = get_time();
+        if (now.tm_hour != hour_last_check && now.tm_min == 0) {
+            cockooApp.play_bell_sequence((now.tm_hour - 1) % 12 + 1);
+        }
+        hour_last_check = now.tm_hour;
     }
+    
+    //while (true) {
+    //    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    //    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+    //    struct std::tm timeInfo;
+    //    localtime_s(&timeInfo, &currentTime);
+
+    //    std::cout << "Cycle, sec " << timeInfo.tm_sec << std::endl;
+    //    
+    //    std::this_thread::sleep_for(std::chrono::seconds((3600 - timeInfo.tm_min*60) + 60 - timeInfo.tm_sec));
+    //    //std::this_thread::sleep_for(std::chrono::seconds(60 - timeInfo.tm_sec));
+
+    //    cockooApp.play_bell_sequence((timeInfo.tm_hour % 12 + 1));
+    //    
+    //}
  
     return 0;
 }
