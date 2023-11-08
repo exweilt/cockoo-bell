@@ -131,9 +131,11 @@ int main() {
     int hour_last_check = get_time().tm_hour;
     while (true) {
         
-        std::this_thread::sleep_for(std::chrono::seconds(3));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         std::tm now = get_time();
+        std::cout << now.tm_hour << ":" << now.tm_min << ":" << now.tm_sec << " | " << hour_last_check << std::endl;
         if (now.tm_hour != hour_last_check && now.tm_min == 0) {
+            //std::cout << "> Cockoo plays " << (now.tm_hour - 1) % 12 + 1 << " times" << std::endl;
             cockooApp.play_bell_sequence((now.tm_hour - 1) % 12 + 1);
         }
         hour_last_check = now.tm_hour;

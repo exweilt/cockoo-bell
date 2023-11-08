@@ -25,3 +25,15 @@ if(WIN32)
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:Cockoo>
         VERBATIM)
 endif()
+
+add_custom_command(
+    TARGET Cockoo
+    COMMENT "COPY INSTALLER BAT"
+    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/INSTALL.bat" $<TARGET_FILE_DIR:Cockoo>
+    VERBATIM)
+
+add_custom_command(
+    TARGET Cockoo
+    COMMENT "COPY UNINSTALLER BAT"
+    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/UNINSTALL.bat" $<TARGET_FILE_DIR:Cockoo>
+    VERBATIM)
